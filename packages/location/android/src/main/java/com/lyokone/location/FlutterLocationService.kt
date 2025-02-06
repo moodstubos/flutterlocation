@@ -197,7 +197,8 @@ class FlutterLocationService : Service(), PluginRegistry.RequestPermissionsResul
     }
 
     fun checkBackgroundPermissions(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        return location?.checkPermissions() ?: false
+        /*return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             activity?.let {
                 val locationPermissionState = ActivityCompat.checkSelfPermission(
                     it,
@@ -207,7 +208,7 @@ class FlutterLocationService : Service(), PluginRegistry.RequestPermissionsResul
             } ?: throw ActivityNotFoundException()
         } else {
             location?.checkPermissions() ?: false
-        }
+        }*/
     }
 
     fun requestBackgroundPermissions() {
@@ -217,7 +218,7 @@ class FlutterLocationService : Service(), PluginRegistry.RequestPermissionsResul
                     it,
                     arrayOf(
                         Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                       /* Manifest.permission.ACCESS_BACKGROUND_LOCATION */
                     ),
                     REQUEST_PERMISSIONS_REQUEST_CODE
                 )
