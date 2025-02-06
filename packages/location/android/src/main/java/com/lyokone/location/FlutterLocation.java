@@ -56,7 +56,7 @@ public class FlutterLocation
     private static final int GPS_ENABLE_REQUEST = 0x1001;
 
     //public FusedLocationProviderClient mFusedLocationClient;
-    private SettingsClient mSettingsClient;
+    //private SettingsClient mSettingsClient;
     private LocationRequest mLocationRequest;
     private LocationSettingsRequest mLocationSettingsRequest;
     // public LocationCallback mLocationCallback;
@@ -107,7 +107,7 @@ public class FlutterLocation
         this.activity = activity;
         if (this.activity != null) {
             //mFusedLocationClient = LocationServices.getFusedLocationProviderClient(activity);
-            mSettingsClient = LocationServices.getSettingsClient(activity);
+            //mSettingsClient = LocationServices.getSettingsClient(activity);
 
             createLocationCallback();
             createLocationRequest();
@@ -117,7 +117,7 @@ public class FlutterLocation
                 mFusedLocationClient.removeLocationUpdates(mLocationCallback);
             }
             mFusedLocationClient = null;*/
-            mSettingsClient = null;
+            //mSettingsClient = null;
             /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && locationManager != null) {
                 locationManager.removeNmeaListener(mMessageListener);
                 mMessageListener = null;
@@ -427,7 +427,7 @@ public class FlutterLocation
         }
 
         this.requestServiceResult = requestServiceResult;
-        mSettingsClient.checkLocationSettings(mLocationSettingsRequest).addOnFailureListener(activity,
+        /*mSettingsClient.checkLocationSettings(mLocationSettingsRequest).addOnFailureListener(activity,
                 e -> {
                     if (e instanceof ResolvableApiException) {
                         ResolvableApiException rae = (ResolvableApiException) e;
@@ -453,7 +453,7 @@ public class FlutterLocation
                         // observed on some phones.
                         requestServiceResult.error("SERVICE_STATUS_ERROR", "Unexpected error type received", null);
                     }
-                });
+                });*/
     }
 
     public void startRequestingLocation() {
@@ -461,17 +461,17 @@ public class FlutterLocation
             result.error("MISSING_ACTIVITY", "You should not requestLocation activation outside of an activity.", null);
             throw new ActivityNotFoundException();
         }
-        mSettingsClient.checkLocationSettings(mLocationSettingsRequest)
+        /*mSettingsClient.checkLocationSettings(mLocationSettingsRequest)
                 .addOnSuccessListener(activity, locationSettingsResponse -> {
                     startRequest();
-                    /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         locationManager.addNmeaListener(mMessageListener, null);
                     }
 
                     if (mFusedLocationClient != null) {
                         mFusedLocationClient
                                 .requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
-                    }*/
+                    }
                 }).addOnFailureListener(activity, e -> {
                     if (e instanceof ResolvableApiException) {
                         ResolvableApiException rae = (ResolvableApiException) e;
@@ -490,17 +490,17 @@ public class FlutterLocation
                         int statusCode = ae.getStatusCode();
                         if (statusCode == LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE) {// This error code happens during AirPlane mode.
                             startRequest();
-                            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                 locationManager.addNmeaListener(mMessageListener, null);
                             }
                             mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback,
-                                    Looper.myLooper());*/
+                                    Looper.myLooper());
                         } else {// This should not happen according to Android documentation but it has been
                             // observed on some phones.
                             sendError("UNEXPECTED_ERROR", e.getMessage(), null);
                         }
                     }
-                });
+                });*/
     }
 
 
