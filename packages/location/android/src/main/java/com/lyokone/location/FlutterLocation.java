@@ -461,6 +461,9 @@ public class FlutterLocation
             result.error("MISSING_ACTIVITY", "You should not requestLocation activation outside of an activity.", null);
             throw new ActivityNotFoundException();
         }
+
+        startRequest();
+
         /*mSettingsClient.checkLocationSettings(mLocationSettingsRequest)
                 .addOnSuccessListener(activity, locationSettingsResponse -> {
                     startRequest();
@@ -546,6 +549,7 @@ public class FlutterLocation
     }
 
     private void sendLocation(Location location ) {
+        //Log.d("HHH", "send location: "+location.toString() );
         HashMap<String, Double> loc = new HashMap<>();
         loc.put("latitude", location.getLatitude());
         loc.put("longitude", location.getLongitude());
