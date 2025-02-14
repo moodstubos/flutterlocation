@@ -40,6 +40,8 @@ class BackgroundNotification(
     private val channelId: String,
     private val notificationId: Int
 ) {
+    private val ACTION_STOP_LISTEN = "action_stop_listen";
+
     private var options: NotificationOptions = NotificationOptions()
     private var builder: NotificationCompat.Builder = NotificationCompat.Builder(context, channelId)
         .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -87,6 +89,7 @@ class BackgroundNotification(
             if (it != 0) it else getDrawableId(kDefaultNotificationIconName)
         }
         builder = builder
+            .setOngoing(true)
             .setContentTitle(options.title)
             .setSmallIcon(iconId)
             .setContentText(options.subtitle)
@@ -103,6 +106,41 @@ class BackgroundNotification(
         } else {
             builder.setContentIntent(null)
         }
+
+        builder.clearActions();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            val intentAction: Intent = Intent(
+                context,
+                FlutterLocationService::class.java
+            )
+            intentAction.setAction(ACTION_STOP_LISTEN);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+
+                val pIntent: PendingIntent? = PendingIntent.getForegroundService(
+                    context,
+                    1,
+                    intentAction,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+                );
+                builder.addAction(android.R.drawable.ic_menu_close_clear_cancel, "Exit", pIntent)
+
+            } else {
+
+                val pIntent: PendingIntent? = PendingIntent.getForegroundService(
+                    context,
+                    1,
+                    intentAction,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                );
+                builder.addAction(android.R.drawable.ic_menu_close_clear_cancel, "Exit", pIntent)
+
+            }
+        }
+
+
 
         if (notify) {
             val notificationManager = NotificationManagerCompat.from(context)
@@ -176,6 +214,32 @@ class FlutterLocationService : Service(), PluginRegistry.RequestPermissionsResul
             ONGOING_NOTIFICATION_ID
         )
     }
+
+    private val ACTION_STOP_LISTEN = "action_stop_listen";
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent != null && ACTION_STOP_LISTEN.equals(intent.action)) {
+
+
+            val log = "URI: " + intent.toUri(Intent.URI_INTENT_SCHEME)
+            Log.d("my", "LOG:::::::$log")
+
+            activity?.finish();
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                stopForeground(STOP_FOREGROUND_REMOVE)
+            } else {
+                @Suppress("DEPRECATION")
+                stopForeground(true)
+            }
+
+            stopSelf()
+            return START_NOT_STICKY
+        }
+
+        return super.onStartCommand(intent, flags, startId);
+    }
+
 
     override fun onBind(intent: Intent?): IBinder {
         Log.d(TAG, "Binding to location service.")
