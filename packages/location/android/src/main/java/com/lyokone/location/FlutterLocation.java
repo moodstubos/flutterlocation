@@ -471,9 +471,11 @@ public class FlutterLocation
         boolean isGooglePlayServicesAvailable = isGooglePlayServicesAvailable(activity);
         Log.d("HHH", "isGooglePlayServicesAvailable: "+isGooglePlayServicesAvailable);
 
-        // keine Ahnung ob das notwendig ist
+        // Ohne Google-Dienste ist checkLocationSettings etc nicht verfügbar. 
+        // Hier also den normalen Location Request direkt starten
         if(  isGooglePlayServicesAvailable == false ) {
             startRequest();
+            return;
         }
 
         mSettingsClient.checkLocationSettings(mLocationSettingsRequest)
@@ -550,9 +552,7 @@ public class FlutterLocation
 
                 }
             });
-
         }
-
 
     }
 
