@@ -191,7 +191,7 @@ public class FlutterLocation
                     return true;
                 }
 
-                this.result.error("SERVICE_STATUS_DISABLED", "Failed to get location. Location services disabled", null);
+                //this.result.error("SERVICE_STATUS_DISABLED", "Failed to get location. Location services disabled", null);
                 this.result = null;
                 return true;
             default:
@@ -536,7 +536,7 @@ public class FlutterLocation
             }
         }
 
-        if( GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(activity) ==   ConnectionResult.SUCCESS) {
+        if( activity != null && GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(activity) ==   ConnectionResult.SUCCESS) {
 
             LocationServices.getFusedLocationProviderClient(activity).getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
                 @Override
